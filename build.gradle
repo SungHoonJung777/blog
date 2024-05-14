@@ -45,7 +45,18 @@ dependencies {
 /*    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: '5.1.0:jakarta'
     annotationProcessor group: 'com.querydsl', name: 'querydsl-jpa', version: '5.1.0:jakarta'*/
     implementation 'jakarta.annotation:jakarta.annotation-api'
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.0.0'
+    implementation group: 'jstl', name: 'jstl', version: '1.2'
     // https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
+    // https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+    implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.2.2'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+/*
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.1'
+*/
+/*    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.24'*/
+
     annotationProcessor group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.1.0'
 
 }
