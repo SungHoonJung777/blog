@@ -30,5 +30,9 @@ public class MemberServiceImpl implements MemberService{
         return dto;
     }
 
-
+    @Override
+    public int pwdFind(String member_id) {
+        int rResult = memberRepository.pwdFind(member_id);
+        return rResult;
+    }
 }

@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
    @Query(value = "SELECT * FROM blog_member WHERE member_id = ?1 AND member_pwd = ?2", nativeQuery = true)
    public MemberEntity login_info(String member_id, String member_pwd);
-
+   @Query(value = "SELECT count(*) FROM blog_member WHERE member_id = ?1 ", nativeQuery = true)
+   public int pwdFind (String member_id);
 }
