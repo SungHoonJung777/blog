@@ -241,14 +241,13 @@
                     </div>
                 </div>
                 <span>or use your account</span>
-                <input type="text" id="member_email" name="member_email" placeholder="이메일을 입력해주세요.">
-                <button id="idCheckBtn" class="idCheckBtn" type="button">임시 비밀번호 전송</button>
-                <input type="text" class="form-control" id="emailCheck"  name="emailCheck" placeholder="인증번호를 입력해주세요." style="display: none; margin-top: 20px; margin-bottom: 10px;"/>
-                <span class="emailTrue" id="emailTrue" style="color:green;"></span>
+                <input type="text" name="member_email" id="member_email" th:value="${member_email}" readonly/>
+                <input type="password" id="member_pwd" name="member_pwd" placeholder="새로운 비밀빈호를 입력해주세요.">
+                <input type="password" id="passwordCheck" name="passwordCheck" placeholder="비밀번호를 재입력 해주세요.">
+                <span id="pwdChk_input_1"  style="display: none; margin-bottom: 30px; color: green;">비밀번호가 일치합니다.</span>
+                <span id="pwdChk_input_2"  style="display: none; margin-bottom: 30px; color: red;">비밀번호가 일치하지 않습니다.</span>
+                <span id="final_pwdChk" style="display: none; margin-bottom: 30px; color: red; ">공백없이 입력해주세요.</span>
                 <button id="loginBtn" class="form_btn" type="button" disabled="disabled" style="background-color: gray;">비밀번호 변경</button>
-                <span  th:if="${success_login} != null ? ${success_login}" style=" color: blue; margin-bottom: 10px;">가입하신 이메일로 인증번호를 발급해드렸습니다.</span>
-                <span  th:if="${error_login} != null ? ${error_login}" style=" color: red; margin-bottom: 10px;">입력하신 정보와 일치하는 정보가 없습니다.</span>
-
             </form>
         </div>
 
@@ -268,132 +267,59 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
-    let idCheck = false;
+    let pwCheck = false;
+    let pwReCheck = false;
+    //PWD 재확인 유효성 검사
+    document.querySelector("#passwordCheck").addEventListener("blur",function () {
+        let pwd = document.querySelector("#member_pwd").value;
+        let pwdChk = document.querySelector("#passwordCheck").value;
+        let frmBtn = document.querySelector("#loginBtn");
+        if(pwd == pwdChk){
+            document.querySelector("#pwdChk_input_1").style.display = 'block';
+            document.querySelector("#pwdChk_input_2").style.display = 'none';
+            pwReCheck = true;
 
-
-    document.querySelector("#loginBtn").addEventListener('click', function () {
-        let id = document.querySelector("#member_email").value;
-
-
-        //ID 공백 체크
-        if(id == ""){
-           /* document.querySelector("#final_boxChk").style.display = 'block';*/
-            alert("이메일을 입력해주세요.");
-            idCheck = false;
+            frmBtn.style.backgroundColor = 'transparent';
+            frmBtn.removeAttribute("disabled");
         } else {
-          /*  document.querySelector("#final_boxChk").style.display = 'none';*/
-            idCheck = true;
+            document.querySelector("#pwdChk_input_1").style.display = 'none';
+            document.querySelector("#pwdChk_input_2").style.display = 'block';
+            pwReCheck = false;
+            frmBtn.style.backgroundColor = 'gray';
+            frmBtn.setAttribute("disabled",true);
         }
-
-
-        if(idCheck){
+    });
+    document.querySelector("#loginBtn").addEventListener('click', function () {
+        let pwd = document.querySelector("#member_pwd").value;
+        let pwdChk = document.querySelector("#passwordCheck").value;
+        let email = document.querySelector("#member_email").value;
+        //PWD 공백 체크
+        if(pwd == ""){
+            document.querySelector("#final_pwdChk").style.display = 'block';
+            pwCheck = false;
+        } else {
+            document.querySelector("#final_pwdChk").style.display = 'none';
+            pwCheck = true;
+        }
+        //PWD 재확인 공백 체크
+        if(pwdChk == ""){
+            document.querySelector("#final_pwdChk").style.display = 'block';
+            pwReCheck = false;
+        } else {
+            document.querySelector("#final_pwdChk").style.display = 'none';
+            pwReCheck = true;
+        }
+        if(pwCheck&&pwReCheck){
             const frm = document.querySelector("#frm");
-            frm.method = "get";
-            frm.action = "/login/pwdChange?email=" + id;
+            frm.method = "post";
+            frm.action = "/login/pwdChange";
             frm.submit();
         }
         return ;
     });
 
-    //인증번호 코드
-    let code = "";
-    document.querySelector("#idCheckBtn").addEventListener('click', function (e) {
-        e.preventDefault();
-        let id = document.querySelector("#member_email").value;
 
 
-        //ID 공백 체크
-        if(id == ""){
-            alert("이메일을 입력해주세요.");
-            idCheck = false;
-        } else {
-
-            idCheck = true;
-        }
-
-        if(idCheck){
-            const frm = document.querySelector("#frm");
-/*            frm.method = "post";
-            frm.action = "/login/pwdFind";
-            frm.submit();*/
-/*            document.querySelector("#final_mailChk").style.display = 'none';*/
-            let emailCheckForm = document.querySelector("#emailCheck").style.display = 'block';
-            document.querySelector("#idCheckBtn").style.backgroundColor = 'gray';
-            document.querySelector("#idCheckBtn").setAttribute("disabled","disabled");
-
-
-            let email = document.querySelector("#member_email");
-            let emailValue = email.value;
-            let checkBox = $("#emailCheck");  // 인증번호 입력란
-            let boxWrap = $(".emailTrue");   // 인증번호 입력란 박스
-            $.ajax({
-
-                type:"GET",
-                url:"/login/email?email=" + emailValue,
-                success : function (data){
-                    console.log("data : " + data);
-                    checkBox.attr("disabled",false);
-                    boxWrap.attr("id", "mail_check_input_box_true");
-                    code = data;
-                }
-
-            });
-        }
-        return ;
-    });
-
-/*
-
-    document.querySelector("#emailBtn").addEventListener("click",function (e){
-        e.preventDefault();
-        if(document.querySelector("#email").value == "" || strongEmail(document.querySelector("#email").value) === false){
-            document.querySelector("#final_mailChk").style.display = 'block';
-        } else {
-            document.querySelector("#final_mailChk").style.display = 'none';
-            let emailCheckForm = document.querySelector("#emailCheck").style.display = 'block';
-            document.querySelector("#emailBtn").style.backgroundColor = 'grey';
-            document.querySelector("#emailBtn").setAttribute("disabled","disabled");
-
-
-            let email = document.querySelector("#email");
-            let emailValue = email.value;
-            let checkBox = $("#emailCheck");  // 인증번호 입력란
-            let boxWrap = $(".emailTrue");   // 인증번호 입력란 박스
-            $.ajax({
-
-                type:"GET",
-                url:"/memberJoin/email?email=" + emailValue,
-                success : function (data){
-                    console.log("data : " + data);
-                    checkBox.attr("disabled",false);
-                    boxWrap.attr("id", "mail_check_input_box_true");
-                    code = data;
-                }
-
-            });
-        }
-
-    })
-*/
-
-    /* 인증번호 비교 */
-    $("#emailCheck").blur(function(){
-        let inputCode = $("#emailCheck").val();        // 입력코드
-        let checkResult = $(".emailTrue") ; // 비교 결과
-
-        if(inputCode == code){
-            checkResult.empty().html("인증번호가 일치합니다.");
-            emailNumCheck = true;
-            let formBtn = document.querySelector("#loginBtn");
-            formBtn.style.backgroundColor = 'transparent'; // 배경색을 투명하게 설정
-            formBtn.removeAttribute("disabled"); // disabled 속성을 제거하여 버튼을 활성화
-
-
-        } else {
-            checkResult.empty().html("인증번호를 다시 확인해주세요.");
-            emailNumCheck = false;
-        }
-    });
 </script>
 </body>
 </html>
