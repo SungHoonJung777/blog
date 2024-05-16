@@ -157,7 +157,7 @@
                 <!-- Content -->
 
                 <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">나의 학습/</span> 학습 정보</h4>
+                    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">나의 학습/</span> 글 등록</h4>
 
                     <!-- Basic Layout & Basic with Icons -->
                     <div class="row">
@@ -165,80 +165,124 @@
                         <div class="col-xxl">
                             <div class="card mb-4">
                                 <div class="card-header d-flex align-items-center justify-content-between">
-                                    <h5 class="mb-0">학습 정보</h5>
+                                    <h5 class="mb-0">글 등록</h5>
+                                    <small class="text-muted float-end">*표시는 필수입력사항</small>
                                 </div>
                                 <div class="card-body">
                                     <form name="frm" id="form" enctype="multipart/form-data">
                                         <input type="hidden" name="board_idx" id="board_idx" th:value="${list.board_idx}">
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_title">제목</label>
+                                            <label class="col-sm-2 col-form-label" for="board_title">* 제목</label>
                                             <div class="col-sm-10">
-                                                <span th:text="${list.board_title}">
+                                                <input type="text" class="form-control" name="board_title" id="board_title" placeholder="" th:value="${list.board_title}"/>
                                             </div>
                                             <span id="final_titleChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
                                         <div class="row mb-3">
-
-                                            <div class="col-sm-10">
-                                                <div class="input-group input-group-merge">
-                                                    <img th:src="@{/img/{filename}(filename=${list.board_image})}" style="width: 500px; height: 100%;"/>
-                                                </div>
-
-
-                                            </div>
-
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_content">학습 내용</label>
+                                            <label class="col-sm-2 col-form-label" for="board_content">* 학습 내용</label>
                                             <textarea
                                                     id="board_content"
                                                     class="form-control"
                                                     name="board_content"
-
+                                                    th:text="${list.board_title}"
                                                     rows="10"
                                                     aria-describedby="basic-icon-default-message2"
-                                                    th:text="${list.board_content}" readonly
                                             ></textarea>
                                             <span id="final_companyChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
+                                       <!-- <div class="row mb-3">
+                                            <label class="col-sm-2 col-form-label" for="file">* 이미지</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group input-group-merge">
+                                                    <input
+                                                            type="file"
+                                                            class="form-control"
+                                                            id="file"
 
+                                                            name="file"
+
+                                                    />
+                                                </div>
+                                                <span id="final_imageChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
+
+                                            </div>
+
+                                        </div>-->
+                                        <span id="final_writerChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
 
 
                                         <div class="row mb-3">
                                             <label class="col-sm-2 col-form-label" for="board_screen">오늘의 학습 노출 여부</label>
                                             <div class="col-sm-10">
-                                                <span th:text="${list.board_screen}"></span>
+                                                <input type="checkbox" id="board_screen"
+                                                       name="board_screen" value="y"
+                                                       th:checked="${list.board_screen == 'y'}" />&nbsp;노출 함
+
+                                                <input type="checkbox" id="board_screen1"
+                                                       name="board_screen" value="n"
+                                                       th:checked="${list.board_screen == 'n'}" />&nbsp;노출 안함
+
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label class="col-sm-2 col-form-label" for="board_start_date">오늘의 학습 노출 기간</label>
                                             <div class="col-sm-10">
+                                                <input
+                                                        type="date"
+                                                        id="board_start_date"
+                                                        class="form-control phone-mask"
 
-                                                    <span th:text="${#temporals.format(list.board_start_date, 'yyyy-MM-dd')}"></span>
-                                                    <span> ~ </span>
-                                                    <span th:text="${#temporals.format(list.board_end_date, 'yyyy-MM-dd')}"></span>
+                                                        name="board_start_date"
+                                                        th:value="${#temporals.format(list.board_start_date, 'yyyy-MM-dd')}"
+                                                />
+                                                <span>~</span>
+                                                <input
+                                                        type="date"
+                                                        id="board_end_date"
+                                                        class="form-control phone-mask"
 
+                                                        name="board_end_date"
+                                                        th:value="${#temporals.format(list.board_end_date, 'yyyy-MM-dd')}"
+                                                />
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-sm-2 col-form-label" for="board_category">분야</label>
                                             <div class="col-sm-10">
-                                                <span th:text="${list.board_category}"></span>
+                                                <input
+                                                        type="text"
+                                                        id="board_category"
+                                                        class="form-control phone-mask"
+                                                        placeholder=""
+                                                        aria-label="658 799 8941"
+                                                        aria-describedby="basic-default-phone"
+                                                        name="board_category"
+                                                        th:value="${list.board_category}"
+                                                />
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-sm-2 col-form-label" for="board_hash">해시태그</label>
                                             <div class="col-sm-10">
-                                                <span th:text="${list.board_hash}"></span>
+                                                <input
+                                                        type="text"
+                                                        id="board_hash"
+                                                        class="form-control phone-mask"
+                                                        placeholder=""
+                                                        aria-label="658 799 8941"
+                                                        aria-describedby="basic-default-phone"
+                                                        name="board_hash"
+                                                        th:value="${list.board_hash}"
+                                                />
                                             </div>
                                         </div>
                                         <div class="row justify-content-end">
                                             <div class="col-sm-10">
                                                 <button id="listBtn" type="button" class="btn btn-primary" style="float:right; margin-top: 20px;">목록</button>
-                                                <button id="registBtn" type="button" class="btn btn-primary" style="float:right; margin-top: 20px;">등록</button>
+                                                <button id="cancelBtn" type="button" class="btn btn-primary" style="float:right; margin-top: 20px;">취소</button>
                                                 <button id="modifyBtn" type="button" class="btn btn-primary" style="float:right; margin-top: 20px;">수정</button>
-                                                <button id="deleteBtn" type="button" class="btn btn-primary" style="float:right; margin-top: 20px;">삭제</button>
+
                                             </div>
                                         </div>
                                     </form>
@@ -494,26 +538,21 @@
             return;
         });*/
 
-    document.querySelector("#registBtn").addEventListener("click", function (){
-        const frm =  document.querySelector("#form");
-        frm.method = 'get';
-        frm.action = '/board/regist';
-        frm.submit();
-    });
+
     document.querySelector("#listBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
         frm.method = 'get';
         frm.action = '/main/board';
         frm.submit();
     });
-    document.querySelector("#modifyBtn").addEventListener("click", function (){
+    document.querySelector("#cancelBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
         const board_idx = document.querySelector("#board_idx").value;
         frm.method = 'get';
-        frm.action = '/board/modify?board_idx=' + board_idx;
+        frm.action = '/board/boardDetail?board_idx=' + board_idx;
         frm.submit();
     });
-    document.querySelector("#deleteBtn").addEventListener("click", function (){
+    document.querySelector("#modifyBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
         const board_idx = document.querySelector("#board_idx").value;
         frm.method = 'get';

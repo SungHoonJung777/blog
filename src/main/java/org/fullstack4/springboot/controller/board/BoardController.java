@@ -145,5 +145,15 @@ public class BoardController {
         model.addAttribute("list", boardDTO);
         return "/board/detail";
     }
-
+    @GetMapping("/modify")
+    public String modifyGET(String board_idx, Model model)throws Exception{
+        log.info("==============================");
+        log.info("BoardController >> modifyGET()");
+        log.info("==============================");
+        int idx = Integer.parseInt(board_idx);
+        BoardDTO boardDTO = boardService.boardDetail(idx);
+        log.info("=========boardDTO=========" + boardDTO);
+        model.addAttribute("list", boardDTO);
+        return "/board/modify";
+    }
 }
