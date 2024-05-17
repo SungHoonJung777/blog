@@ -146,11 +146,11 @@ public class BoardController {
         return "/board/detail";
     }
     @GetMapping("/modify")
-    public String modifyGET(String board_idx, Model model)throws Exception{
+    public String modifyGET(String boardIdx, Model model)throws Exception{
         log.info("==============================");
         log.info("BoardController >> modifyGET()");
         log.info("==============================");
-        int idx = Integer.parseInt(board_idx);
+        int idx = Integer.parseInt(boardIdx);
         BoardDTO boardDTO = boardService.boardDetail(idx);
         log.info("=========boardDTO=========" + boardDTO);
         model.addAttribute("list", boardDTO);
@@ -256,8 +256,8 @@ public class BoardController {
     }
 
     @PostMapping("/delete")
-    public String deleteGET(String board_idx) throws Exception{
-        int idx = Integer.parseInt(board_idx);
+    public String deleteGET(String boardIdx) throws Exception{
+        int idx = Integer.parseInt(boardIdx);
         int dResult = boardService.deleteBoard(idx);
 
         return "redirect:/main/board";
