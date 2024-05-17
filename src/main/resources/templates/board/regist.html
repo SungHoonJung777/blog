@@ -172,18 +172,18 @@
                                     <form name="frm" id="form" enctype="multipart/form-data">
 
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_title">* 제목</label>
+                                            <label class="col-sm-2 col-form-label" for="boardTitle">* 제목</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="board_title" id="board_title" placeholder="" value=""/>
+                                                <input type="text" class="form-control" name="boardTitle" id="boardTitle" placeholder="" value=""/>
                                             </div>
                                             <span id="final_titleChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_content">* 학습 내용</label>
+                                            <label class="col-sm-2 col-form-label" for="boardContent">* 학습 내용</label>
                                             <textarea
-                                                    id="board_content"
+                                                    id="boardContent"
                                                     class="form-control"
-                                                    name="board_content"
+                                                    name="boardContent"
                                                     value=""
                                                     rows="10"
                                                     aria-describedby="basic-icon-default-message2"
@@ -215,7 +215,7 @@
                                             <label class="col-sm-2 col-form-label" for="board_screen">오늘의 학습 노출 여부</label>
                                             <div class="col-sm-10">
                                                 <input
-                                                        type="checkbox"
+                                                        type="radio"
                                                         id="board_screen"
 
 
@@ -223,7 +223,7 @@
                                                         value="y"
                                                 />&nbsp;노출 함
                                                 <input
-                                                        type="checkbox"
+                                                        type="radio"
                                                         id="board_screen1"
 
 

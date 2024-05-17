@@ -169,11 +169,11 @@
                                 </div>
                                 <div class="card-body">
                                     <form name="frm" id="form" enctype="multipart/form-data">
-                                        <input type="hidden" name="board_idx" id="board_idx" th:value="${list.board_idx}">
+                                        <input type="hidden" name="boardIdx" id="boardIdx" th:value="${list.boardIdx}">
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_title">제목</label>
+                                            <label class="col-sm-2 col-form-label" for="boardTitle">제목</label>
                                             <div class="col-sm-10">
-                                                <span th:text="${list.board_title}">
+                                                <span th:text="${list.boardTitle}">
                                             </div>
                                             <span id="final_titleChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
@@ -189,15 +189,15 @@
 
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_content">학습 내용</label>
+                                            <label class="col-sm-2 col-form-label" for="boardContent">학습 내용</label>
                                             <textarea
-                                                    id="board_content"
+                                                    id="boardContent"
                                                     class="form-control"
-                                                    name="board_content"
+                                                    name="boardContent"
 
                                                     rows="10"
                                                     aria-describedby="basic-icon-default-message2"
-                                                    th:text="${list.board_content}" readonly
+                                                    th:text="${list.boardContent}" readonly
                                             ></textarea>
                                             <span id="final_companyChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
@@ -508,16 +508,16 @@
     });
     document.querySelector("#modifyBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
-        const board_idx = document.querySelector("#board_idx").value;
+  /*      const board_idx = document.querySelector("#board_idx").value;*/
         frm.method = 'get';
-        frm.action = '/board/modify?board_idx=' + board_idx;
+        frm.action = '/board/modify' ;
         frm.submit();
     });
     document.querySelector("#deleteBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
-        const board_idx = document.querySelector("#board_idx").value;
-        frm.method = 'get';
-        frm.action = '/board/delete?board_idx=' + board_idx;
+       /* const board_idx = document.querySelector("#board_idx").value;*/
+        frm.method = 'post';
+        frm.action = '/board/delete' ;
         frm.submit();
     });
 </script>

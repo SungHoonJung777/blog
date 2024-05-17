@@ -1,4 +1,3 @@
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <!-- =========================================================
@@ -60,6 +59,40 @@
     <link rel="stylesheet" href="/resources/resources/assets/vendor/css/pages/page-auth.css"/>
     <!-- Helpers -->
     <script src="/../assets/vendor/js/helpers.js"></script>
+    <style>
+        .pagination {
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .pagination li {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .pagination li a,
+        .pagination li span {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid #007bff;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .pagination li a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .pagination li span.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -72,7 +105,7 @@
             <div class="app-brand demo">
                 <a href="/admin/main" class="app-brand-link">
               <span class="app-brand-logo demo">
-                 <img src="/resources/resources/img/BEClogo.png"style="width: 15%" onclick="location='/'"/>
+                 <img src="/resources/resources/img/BEClogo.png" style="width: 15%" onclick="location='/'"/>
                   <defs>
                     <path
                             d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
@@ -169,7 +202,6 @@
             <!-- Navbar -->
 
 
-
             <!-- / Navbar -->
 
             <!-- Content wrapper -->
@@ -179,11 +211,20 @@
                 <div class="container-xxl flex-grow-1 container-p-y">
                     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Tables /</span> 나의 학습</h4>
 
-                    <hr class="my-5" />
+                    <hr class="my-5"/>
                     <!-- Hoverable Table rows -->
 
                     <div class="card">
                         <h5 class="card-header">나의 학습</h5>
+                        <!-- 검색 폼 -->
+                        <form th:action="@{/main/board}" method="get">
+                            <select name="searchType">
+                                <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                                <option value="content" th:selected="${searchType == 'content'}">내용</option>
+                            </select>
+                            <input type="text" name="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}" />
+                            <button type="button" id="searchBtn">검색</button>
+                        </form>
                         <div class="table-responsive text-nowrap">
                             <table class="table table-hover">
                                 <thead>
@@ -199,24 +240,25 @@
                                 <tbody class="table-border-bottom-0">
 
 
-                                    <tr th:each="list : ${list}">
-                                        <td th:text="${list.board_idx}"></td>
+                                <tr th:each="list : ${postsPages}">
+                                    <td th:text="${list.boardIdx}"></td>
 
-                                        <td><a th:text="${list.board_title}" th:href="@{/board/boardDetail(board_idx=${list.board_idx})}"></a></td>
+                                    <td><a th:text="${list.boardTitle}"
+                                           th:href="@{/board/boardDetail(boardIdx=${list.boardIdx})}"></a></td>
 
-                                        <td th:text="${#temporals.format(list.board_reg_date, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#temporals.format(list.board_reg_date, 'yyyy-MM-dd')}"></td>
 
-                                        <td ><span th:text="${list.board_like}" class="badge bg-label-primary me-1"></span></td>
-                                        <td th:text="${list.board_screen}"></td>
-                                        <td>
-                                            <span th:text="${#temporals.format(list.board_start_date, 'yyyy-MM-dd')}"></span>
-                                            <span> ~ </span>
-                                            <span th:text="${#temporals.format(list.board_end_date, 'yyyy-MM-dd')}"></span>
-                                        </td>
+                                    <td><span th:text="${list.board_like}" class="badge bg-label-primary me-1"></span>
+                                    </td>
+                                    <td th:text="${list.board_screen}"></td>
+                                    <td>
+                                        <span th:text="${#temporals.format(list.board_start_date, 'yyyy-MM-dd')}"></span>
+                                        <span> ~ </span>
+                                        <span th:text="${#temporals.format(list.board_end_date, 'yyyy-MM-dd')}"></span>
+                                    </td>
 
 
-
-                                    </tr>
+                                </tr>
 
 
                                 </tbody>
@@ -226,58 +268,66 @@
                     <div class="row justify-content-end">
                         <div class="col-sm-10">
 
-                            <button id="registBtn" type="button" class="btn btn-primary" style="float: right; margin-top: 20px;">등록</button>
+                            <button id="registBtn" type="button" class="btn btn-primary"
+                                    style="float: right; margin-top: 20px;">등록
+                            </button>
                         </div>
                     </div>
-                    <!-- / Footer -->
 
-                    <!--<div class="pageInfo_wrap">
-                        <div class="pageInfo_area">
-                            &lt;!&ndash; 이전페이지 버튼 &ndash;&gt;
-                            <c:if test="${pageMaker.prev}">
-                                <li class="pageInfo_btn previous"><a href="${pageMaker.startPage-1}">Previous</a></li>
-                            </c:if>
+                    <!-- 첫번째 페이지로 이동 -->
+               <!--   <ul class="pagination">
+                        <li><a th:href="@{/main/board(page=1, keyword=${keyword}, searchType=${searchType})}"> << </a></li>
+                        <li th:class="${boardPage != null and boardPage.first ? 'disabled' : ''}">
+                            <a th:if="${boardPage != null and !boardPage.first}" th:href="@{/main/board(page=${boardPage.number - 1}, keyword=${keyword}, searchType=${searchType})}"> 이전 </a>
+                            <span th:if="${boardPage == null or boardPage.first}"> 이전 </span>
+                        </li>
+                        <span th:each="page: ${#numbers.sequence(boardPage != null and boardPage.totalPages > 5 ? (boardPage.number - 2 > 0 ? boardPage.number - 2 : 1) : 1, boardPage != null and boardPage.totalPages > 5 ? (boardPage.number + 2 < boardPage.totalPages ? boardPage.number + 2 : boardPage.totalPages) : boardPage != null ? boardPage.totalPages : 1)}">
+                        <li th:class="${page == (boardPage != null ? boardPage.number : 1) ? 'active' : ''}">
+                            <a th:href="@{/main/board(page=${page}, keyword=${keyword}, searchType=${searchType})}" th:text="${page}"></a>
+                        </li>
+                    </span>
+                             <li th:class="${boardPage != null and boardPage.last ? 'disabled' : ''}">
+                            <a th:if="${boardPage != null and !boardPage.last}" th:href="@{/main/board(page=${boardPage.number + 1}, keyword=${keyword}, searchType=${searchType})}"> 다음 </a>
+                            <span th:if="${boardPage == null or boardPage.last}"> 다음 </span>
+                        </li>
+                        <li><a th:href="@{/main/board(page=${boardPage != null ? boardPage.totalPages : 1}, keyword=${keyword}, searchType=${searchType})}"> >> </a></li>
+                    </ul>-->
+                    <ul class="pagination">
+                        <li><a th:href="@{/main/board(page=1)}"> << </a></li>
 
-                            &lt;!&ndash; 각 번호 페이지 버튼 &ndash;&gt;
-                            <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
-                                <li class="pageInfo_btn ${pageMaker.cri.pageNum == num ? "active":"" }"><a href="${num}">${num}</a></li>
-                            </c:forEach>
+                        <li th:class="${postsPages.first} ? 'disabled'">
+                            <a th:if="${!postsPages.first}" th:href="@{/main/board(page=${postsPages.number})}"> 이전 </a>
+                            <span th:if="${postsPages.first}"> 이전 </span>
+                        </li>
+
+                        <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                            <li>
+                                <span th:if="${page == postsPages.number + 1}" th:text="${page}"></span>
+                                <a th:unless="${page == postsPages.number + 1}" th:href="@{/main/board(page=${page})}" th:text="${page}"></a>
+                            </li>
+                        </span>
+
+                        <li th:class="${postsPages.number == postsPages.totalPages - 1} ? 'disabled'">
+                            <a th:if="${postsPages.number != postsPages.totalPages - 1}" th:href="@{/main/board(page=${postsPages.number + 2})}"> 다음 </a>
+                            <span th:if="${postsPages.number == postsPages.totalPages - 1}"> 다음 </span>
+                        </li>
+
+                        <li><a th:href="@{/main/board(page=${postsPages.totalPages})}"> >> </a></li>
+                    </ul>
 
 
-                            &lt;!&ndash; 다음페이지 버튼 &ndash;&gt;
-                            <c:if test="${pageMaker.next}">
-                                <li class="pageInfo_btn next"><a href="${pageMaker.endPage + 1 }">Next</a></li>
-                            </c:if>
-                        </div>
-
-                        <div class="search_wrap">
-                            <div class="search_area d-flex align-items-center">
-                                <select name="type" class="form-control mr-2">
-                                    <option value="" <c:out value="${pageMaker.cri.type == null?'selected':'' }"/>>&#45;&#45;</option>
-                                    <option value="T" <c:out value="${pageMaker.cri.type eq 'T'?'selected':'' }"/>>상품 이름</option>
-                                    <option value="W" <c:out value="${pageMaker.cri.type eq 'W'?'selected':'' }"/>>상품 저자</option>
-                                    <option value="C" <c:out value="${pageMaker.cri.type eq 'C'?'selected':'' }"/>>상품 출판사</option>
-                                </select>
-                                <input type="text" id="keyword" name="keyword" class="form-control mr-2" placeholder="Keyword">
-                                <button id="searchBtn" class="btn btn-primary">Search</button>
-                            </div>
-                        </div>
-
-                    </div>-->
                     <div class="content-backdrop fade"></div>
                 </div>
                 <!-- Content wrapper -->
             </div>
             <!-- / Layout page -->
         </div>
+        <form class="moveForm" method="get" id="moveForm">
+            <input type="hidden" name="searchType" th:value="${searchType}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="page" th:value="${page}">
+        </form>
 
-   <!--     <form class="moveForm" method="get" id="moveForm">
-            <input type="hidden" name="type" value="${pageMaker.cri.type }">
-            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-            <input type="hidden" name="keyword" value="${pageMaker.cri.keyword }">
-        </form>-->
-        <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 </div>
@@ -285,41 +335,120 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-/*    const moveForm = document.querySelector("#moveForm");
-    document.querySelector(".pageinfo")
-    $(".pageInfo_area a").on("click", function(e){
-        console.log("#############3");
-        e.preventDefault();
-        const pageNum = $(this).attr("href");
-        moveForm.querySelector("input[name='pageNum']").value = pageNum;
-        console.log(pageNum+"######");
-        moveForm.action = "/admin/productList";
-        moveForm.submit();
+    /*document.addEventListener("DOMContentLoaded", function () {
+        const moveForm = document.querySelector("#moveForm");
+
+        // 페이지 번호 클릭 시
+        document.querySelectorAll(".pageInfo_area a").forEach(function (link) {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const pageNum = link.getAttribute("href");
+                moveForm.querySelector("input[name='page']").value = pageNum;
+                moveForm.submit();
+            });
+        });
+
+        // 검색 버튼 클릭 시
+        document.querySelector("#searchBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            const searchType = document.querySelector("#searchType").value;
+            const keyword = document.querySelector("#keyword").value;
+
+            if (!searchType || !keyword) {
+                alert("검색 종류와 키워드를 입력하세요.");
+                return;
+            }
+
+            moveForm.querySelector("input[name='searchType']").value = searchType;
+            moveForm.querySelector("input[name='keyword']").value = keyword;
+            moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정
+            moveForm.submit();
+        });
     });
 
-    document.querySelector("#searchBtn").addEventListener("click", function (e) {
-        e.preventDefault();
 
-        let type = $(".search_area select").val();
-        let val = document.querySelector("#keyword").value;
 
-        if(!type){
-            alert("검색 종류를 선택하세요.");
-            return false;
-        }
+       const moveForm = document.querySelector("#moveForm");
+        document.querySelector(".pageinfo")
+        $(".pageInfo_area a").on("click", function(e){
+            console.log("#############3");
+            e.preventDefault();
+            const pageNum = $(this).attr("href");
+            moveForm.querySelector("input[name='pageNum']").value = pageNum;
+            console.log(pageNum+"######");
+            moveForm.action = "/admin/productList";
+            moveForm.submit();
+        });
 
-        if(!val){
-            alert("키워드를 입력하세요.");
-            return false;
-        }
+        document.querySelector("#searchBtn").addEventListener("click", function (e) {
+            e.preventDefault();
 
-        moveForm.querySelector("input[name='type']").value = type;
-        moveForm.querySelector("input[name='keyword']").value = val;
-        moveForm.querySelector("input[name='pageNum']").value = 1;
-        moveForm.submit();
-    });*/
+            let type = $(".search_area select").val();
+            let val = document.querySelector("#keyword").value;
 
-    document.querySelector("#registBtn").addEventListener("click", function (){
+            if(!type){
+                alert("검색 종류를 선택하세요.");
+                return false;
+            }
+
+            if(!val){
+                alert("키워드를 입력하세요.");
+                return false;
+            }
+
+            moveForm.querySelector("input[name='type']").value = type;
+            moveForm.querySelector("input[name='keyword']").value = val;
+            moveForm.querySelector("input[name='pageNum']").value = 1;
+            moveForm.submit();
+        });
+            document.addEventListener('DOMContentLoaded', function() {
+                const pageNumbers = document.querySelectorAll('.pagination li span');
+
+                pageNumbers.forEach(function(pageNumber) {
+                    pageNumber.addEventListener('mousedown', function() {
+                        // 모든 페이지 번호의 active 클래스를 제거
+                        pageNumbers.forEach(function(page) {
+                            page.classList.remove('active');
+                        });
+
+                        // 현재 클릭된 페이지 번호에 active 클래스 추가
+                        this.classList.add('active');
+                    });
+                });
+            });*/
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const moveForm = document.querySelector("#moveForm");
+
+        // 페이지 번호 클릭 시
+        document.querySelectorAll(".pagination a").forEach(function (link) {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const pageNum = link.getAttribute("href").split("=")[1];
+                moveForm.querySelector("input[name='page']").value = pageNum;
+                moveForm.submit();
+            });
+        });
+
+        // 검색 버튼 클릭 시
+        document.querySelector("#searchBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            const searchType = document.querySelector("select[name='searchType']").value;
+            const keyword = document.querySelector("input[name='keyword']").value;
+
+            if (!searchType || !keyword) {
+                alert("검색 종류와 키워드를 입력하세요.");
+                return;
+            }
+
+            moveForm.querySelector("input[name='searchType']").value = searchType;
+            moveForm.querySelector("input[name='keyword']").value = keyword;
+            moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정
+            moveForm.submit();
+        });
+    });
+
+    document.querySelector("#registBtn").addEventListener("click", function () {
         location.href = '/board/regist';
     });
 </script>

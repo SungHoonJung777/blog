@@ -170,21 +170,22 @@
                                 </div>
                                 <div class="card-body">
                                     <form name="frm" id="form" enctype="multipart/form-data">
-                                        <input type="hidden" name="board_idx" id="board_idx" th:value="${list.board_idx}">
+                                        <input type="hidden" name="boardIdx" id="boardIdx" th:value="${list.boardIdx}">
+                                        <input type="hidden" name="board_image" id="board_image" th:value="${list.board_image}">
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_title">* 제목</label>
+                                            <label class="col-sm-2 col-form-label" for="boardTitle">* 제목</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="board_title" id="board_title" placeholder="" th:value="${list.board_title}"/>
+                                                <input type="text" class="form-control" name="boardTitle" id="boardTitle" placeholder="" th:value="${list.boardTitle}"/>
                                             </div>
                                             <span id="final_titleChk" style="display: none; color: red;">공백 없이 입력해주세요.</span>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-sm-2 col-form-label" for="board_content">* 학습 내용</label>
+                                            <label class="col-sm-2 col-form-label" for="boardContent">* 학습 내용</label>
                                             <textarea
-                                                    id="board_content"
+                                                    id="boardContent"
                                                     class="form-control"
-                                                    name="board_content"
-                                                    th:text="${list.board_title}"
+                                                    name="boardContent"
+                                                    th:text="${list.boardContent}"
                                                     rows="10"
                                                     aria-describedby="basic-icon-default-message2"
                                             ></textarea>
@@ -214,11 +215,11 @@
                                         <div class="row mb-3">
                                             <label class="col-sm-2 col-form-label" for="board_screen">오늘의 학습 노출 여부</label>
                                             <div class="col-sm-10">
-                                                <input type="checkbox" id="board_screen"
+                                                <input type="radio" id="board_screen"
                                                        name="board_screen" value="y"
                                                        th:checked="${list.board_screen == 'y'}" />&nbsp;노출 함
 
-                                                <input type="checkbox" id="board_screen1"
+                                                <input type="radio" id="board_screen1"
                                                        name="board_screen" value="n"
                                                        th:checked="${list.board_screen == 'n'}" />&nbsp;노출 안함
 
@@ -554,9 +555,9 @@
     });
     document.querySelector("#modifyBtn").addEventListener("click", function (){
         const frm =  document.querySelector("#form");
-        const board_idx = document.querySelector("#board_idx").value;
-        frm.method = 'get';
-        frm.action = '/board/delete?board_idx=' + board_idx;
+ /*       const board_idx = document.querySelector("#board_idx").value;*/
+        frm.method = 'post';
+        frm.action = '/board/modify';
         frm.submit();
     });
 </script>
