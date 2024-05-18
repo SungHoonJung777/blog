@@ -26,5 +26,9 @@ public interface BoardService {
     Page<BoardDTO> pagingLike(LocalDateTime boardStartDate, LocalDateTime boardEndDate, String keyword, Pageable pageable ,
                           String searchType);
 
+    void commonDelete(CommonDTO commonDTO);
+
+    List<BoardDTO> getListMy(String member_id);
+    List<BoardDTO> getListYou(String member_id);
 
 }

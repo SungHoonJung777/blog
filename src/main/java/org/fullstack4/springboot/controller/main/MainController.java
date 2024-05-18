@@ -110,6 +110,29 @@ public class MainController {
     }
 
 
+    @GetMapping("/common")
+    public String common(HttpServletRequest request , Model model){
+        log.info("==============================");
+        log.info("mainController >> common()");
+        log.info("==============================");
+        HttpSession session = request.getSession();
 
+        List<BoardDTO> boardDTOList = boardService.getListMy((String)session.getAttribute("member_id"));
+        log.info("========boardDTOList==========" + boardDTOList);
+        model.addAttribute("postsPages", boardDTOList);
+        return "/main/common";
+    }
+    @GetMapping("/youCommon")
+    public String youCommon(HttpServletRequest request , Model model){
+        log.info("==============================");
+        log.info("mainController >> common()");
+        log.info("==============================");
+        HttpSession session = request.getSession();
+
+        List<BoardDTO> boardDTOList = boardService.getListYou((String)session.getAttribute("member_id"));
+        log.info("========boardDTOList==========" + boardDTOList);
+        model.addAttribute("postsPages", boardDTOList);
+        return "/main/youCommon";
+    }
 
 }

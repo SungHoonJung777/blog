@@ -168,4 +168,27 @@ public class BoardServiceImpl implements BoardService {
 
         return commonDTOList;
     }
+
+    @Override
+    public void commonDelete(CommonDTO commonDTO) {
+        int board_idx = commonDTO.getBoard_idx();
+        String common_member_id = commonDTO.getCommon_member_id();
+
+        commonRepository.commonDelete(board_idx, common_member_id);
+
+    }
+
+    @Override
+    public List<BoardDTO> getListMy(String member_id) {
+        List<BoardDTO> boardDTOList = boardRepository.getListMy(member_id).stream().map(vo-> modelMapper.map(vo,BoardDTO.class)).collect(Collectors.toList());
+
+        return boardDTOList;
+    }
+    @Override
+    public List<BoardDTO> getListYou(String member_id) {
+        List<BoardDTO> boardDTOList = boardRepository.getListYou(member_id).stream().map(vo-> modelMapper.map(vo,BoardDTO.class)).collect(Collectors.toList());
+
+        return boardDTOList;
+    }
+
 }

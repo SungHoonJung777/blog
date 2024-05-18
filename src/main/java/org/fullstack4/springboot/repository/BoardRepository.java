@@ -19,9 +19,14 @@ import java.util.List;
 public interface BoardRepository  extends JpaRepository<BoardEntity, Integer> {
     @Query(value ="SELECT * FROM blog_board where member_id = ?1 ORDER BY board_idx DESC" , nativeQuery = true)
     List<BoardEntity> getList(String member_id);
+    @Query(value ="SELECT distinct  a.* FROM blog_board a inner join blog_common b on a.board_idx = b.board_idx where a.member_id = ?1 ORDER BY a.board_idx DESC" , nativeQuery = true)
+    List<BoardEntity> getListMy(String member_id);
+    @Query(value ="SELECT distinct  a.* FROM blog_board a inner join blog_common b on a.board_idx = b.board_idx where b.common_member_id = ?1 ORDER BY a.board_idx DESC" , nativeQuery = true)
+    List<BoardEntity> getListYou(String member_id);
 
 
-/*
+
+    /*
     @Query(value = "insert into blog_board (board_title, board_like, board_content, board_category, board_hash, member_id, board_start_date, board_end_date , board_reg_date) " +
             "values (:#{#boardDTO.board_title}, :#{#boardDTO.board_like}, :#{#boardDTO.board_content}" +
             ", :#{#boardDTO.board_category}, :#{#boardDTO.board_hash}, :#{#boardDTO.member_id}, :#{#boardDTO.board_start_date}, :#{#boardDTO.board_end_date}, now())", nativeQuery = true)

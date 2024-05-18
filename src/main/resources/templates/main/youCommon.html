@@ -309,7 +309,11 @@
                         <div class="sort-buttons">
                             <button type="button" id="regDateBtn" value="regDate">최신 등록 순</button>
                             <button type="button" id="likeBtn" value="like">좋아요 순</button>
+                            <button type="button" id="myCommon"  style="background-color: purple;">내가 한 공유</button>
+                            <button type="button" id="youCommon" style="background-color: purple;">내가 받은 공유</button>
                         </div>
+
+
                         <div class="table-responsive text-nowrap">
                             <table class="table table-hover">
                                 <thead>
@@ -350,56 +354,56 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row justify-content-end">
-                        <div class="col-sm-10">
+                    <!--            <div class="row justify-content-end">
+                                    <div class="col-sm-10">
 
-                            <button id="registBtn" type="button" class="btn btn-primary"
-                                    style="float: right; margin-top: 20px;">등록
-                            </button>
-                        </div>
-                    </div>
+                                        <button id="registBtn" type="button" class="btn btn-primary"
+                                                style="float: right; margin-top: 20px;">등록
+                                        </button>
+                                    </div>
+                                </div>-->
 
                     <!-- 첫번째 페이지로 이동 -->
-               <!--   <ul class="pagination">
-                        <li><a th:href="@{/main/board(page=1, keyword=${keyword}, searchType=${searchType})}"> << </a></li>
-                        <li th:class="${boardPage != null and boardPage.first ? 'disabled' : ''}">
-                            <a th:if="${boardPage != null and !boardPage.first}" th:href="@{/main/board(page=${boardPage.number - 1}, keyword=${keyword}, searchType=${searchType})}"> 이전 </a>
-                            <span th:if="${boardPage == null or boardPage.first}"> 이전 </span>
-                        </li>
-                        <span th:each="page: ${#numbers.sequence(boardPage != null and boardPage.totalPages > 5 ? (boardPage.number - 2 > 0 ? boardPage.number - 2 : 1) : 1, boardPage != null and boardPage.totalPages > 5 ? (boardPage.number + 2 < boardPage.totalPages ? boardPage.number + 2 : boardPage.totalPages) : boardPage != null ? boardPage.totalPages : 1)}">
-                        <li th:class="${page == (boardPage != null ? boardPage.number : 1) ? 'active' : ''}">
-                            <a th:href="@{/main/board(page=${page}, keyword=${keyword}, searchType=${searchType})}" th:text="${page}"></a>
-                        </li>
-                    </span>
-                             <li th:class="${boardPage != null and boardPage.last ? 'disabled' : ''}">
-                            <a th:if="${boardPage != null and !boardPage.last}" th:href="@{/main/board(page=${boardPage.number + 1}, keyword=${keyword}, searchType=${searchType})}"> 다음 </a>
-                            <span th:if="${boardPage == null or boardPage.last}"> 다음 </span>
-                        </li>
-                        <li><a th:href="@{/main/board(page=${boardPage != null ? boardPage.totalPages : 1}, keyword=${keyword}, searchType=${searchType})}"> >> </a></li>
-                    </ul>-->
-                    <ul class="pagination">
-                        <li><a th:href="@{/main/board(page=1)}"> << </a></li>
+                    <!--   <ul class="pagination">
+                             <li><a th:href="@{/main/board(page=1, keyword=${keyword}, searchType=${searchType})}"> << </a></li>
+                             <li th:class="${boardPage != null and boardPage.first ? 'disabled' : ''}">
+                                 <a th:if="${boardPage != null and !boardPage.first}" th:href="@{/main/board(page=${boardPage.number - 1}, keyword=${keyword}, searchType=${searchType})}"> 이전 </a>
+                                 <span th:if="${boardPage == null or boardPage.first}"> 이전 </span>
+                             </li>
+                             <span th:each="page: ${#numbers.sequence(boardPage != null and boardPage.totalPages > 5 ? (boardPage.number - 2 > 0 ? boardPage.number - 2 : 1) : 1, boardPage != null and boardPage.totalPages > 5 ? (boardPage.number + 2 < boardPage.totalPages ? boardPage.number + 2 : boardPage.totalPages) : boardPage != null ? boardPage.totalPages : 1)}">
+                             <li th:class="${page == (boardPage != null ? boardPage.number : 1) ? 'active' : ''}">
+                                 <a th:href="@{/main/board(page=${page}, keyword=${keyword}, searchType=${searchType})}" th:text="${page}"></a>
+                             </li>
+                         </span>
+                                  <li th:class="${boardPage != null and boardPage.last ? 'disabled' : ''}">
+                                 <a th:if="${boardPage != null and !boardPage.last}" th:href="@{/main/board(page=${boardPage.number + 1}, keyword=${keyword}, searchType=${searchType})}"> 다음 </a>
+                                 <span th:if="${boardPage == null or boardPage.last}"> 다음 </span>
+                             </li>
+                             <li><a th:href="@{/main/board(page=${boardPage != null ? boardPage.totalPages : 1}, keyword=${keyword}, searchType=${searchType})}"> >> </a></li>
+                         </ul>-->
+                    <!--    <ul class="pagination">
+                            <li><a th:href="@{/main/board(page=1)}"> << </a></li>
 
-                        <li th:class="${postsPages.first} ? 'disabled'">
-                            <a th:if="${!postsPages.first}" th:href="@{/main/board(page=${postsPages.number})}"> < </a>
-                            <span th:if="${postsPages.first}"> < </span>
-                        </li>
-
-                        <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
-                            <li>
-                                <span th:if="${page == postsPages.number + 1}" th:text="${page}"></span>
-                                <a th:unless="${page == postsPages.number + 1}" th:href="@{/main/board(page=${page})}" th:text="${page}"></a>
+                            <li th:class="${postsPages.first} ? 'disabled'">
+                                <a th:if="${!postsPages.first}" th:href="@{/main/board(page=${postsPages.number})}"> < </a>
+                                <span th:if="${postsPages.first}"> < </span>
                             </li>
-                        </span>
 
-                        <li th:class="${postsPages.number == postsPages.totalPages - 1} ? 'disabled'">
-                            <a th:if="${postsPages.number != postsPages.totalPages - 1}" th:href="@{/main/board(page=${postsPages.number + 2})}"> > </a>
-                            <span th:if="${postsPages.number == postsPages.totalPages - 1}"> > </span>
-                        </li>
+                            <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                                <li>
+                                    <span th:if="${page == postsPages.number + 1}" th:text="${page}"></span>
+                                    <a th:unless="${page == postsPages.number + 1}" th:href="@{/main/board(page=${page})}" th:text="${page}"></a>
+                                </li>
+                            </span>
 
-                        <li><a th:href="@{/main/board(page=${postsPages.totalPages})}"> >> </a></li>
-                    </ul>
+                            <li th:class="${postsPages.number == postsPages.totalPages - 1} ? 'disabled'">
+                                <a th:if="${postsPages.number != postsPages.totalPages - 1}" th:href="@{/main/board(page=${postsPages.number + 2})}"> > </a>
+                                <span th:if="${postsPages.number == postsPages.totalPages - 1}"> > </span>
+                            </li>
 
+                            <li><a th:href="@{/main/board(page=${postsPages.totalPages})}"> >> </a></li>
+                        </ul>
+    -->
 
                     <div class="content-backdrop fade"></div>
                 </div>
@@ -407,16 +411,16 @@
             </div>
             <!-- / Layout page -->
         </div>
-        <form class="moveForm" method="get" id="moveForm">
-            <input type="hidden" name="searchType" th:value="${searchType}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-            <input type="hidden" name="page" th:value="${page}">
-            <input type="hidden" name="boardStartDate" th:value="${boardStartDate}">
-            <input type="hidden" name="boardEndDate" th:value="${boardEndDate}">
-            <input type="hidden" name="regDate" th:value="${regDate}">
-            <input type="hidden" name="like" th:value="${like}">
-        </form>
-
+        <!--   <form class="moveForm" method="get" id="moveForm">
+               <input type="hidden" name="searchType" th:value="${searchType}">
+               <input type="hidden" name="keyword" th:value="${keyword}">
+               <input type="hidden" name="page" th:value="${page}">
+               <input type="hidden" name="boardStartDate" th:value="${boardStartDate}">
+               <input type="hidden" name="boardEndDate" th:value="${boardEndDate}">
+               <input type="hidden" name="regDate" th:value="${regDate}">
+               <input type="hidden" name="like" th:value="${like}">
+           </form>
+   -->
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 </div>
@@ -425,69 +429,76 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const moveForm = document.querySelector("#moveForm");
+    /* document.addEventListener("DOMContentLoaded", function () {
+         const moveForm = document.querySelector("#moveForm");
 
-        // 페이지 번호 클릭 시
-        document.querySelectorAll(".pagination a").forEach(function (link) {
-            link.addEventListener("click", function (e) {
-                e.preventDefault();
-                const pageNum = link.getAttribute("href").split("=")[1];
-                const searchType = document.querySelector("select[name='searchType']").value;
-                const keyword = document.querySelector("input[name='keyword']").value;
-                const startDate  = document.querySelector("input[name='boardStartDate']").value;
-                const endDate  = document.querySelector("input[name='boardEndDate']").value;
+         // 페이지 번호 클릭 시
+         document.querySelectorAll(".pagination a").forEach(function (link) {
+             link.addEventListener("click", function (e) {
+                 e.preventDefault();
+                 const pageNum = link.getAttribute("href").split("=")[1];
+                 const searchType = document.querySelector("select[name='searchType']").value;
+                 const keyword = document.querySelector("input[name='keyword']").value;
+                 const startDate  = document.querySelector("input[name='boardStartDate']").value;
+                 const endDate  = document.querySelector("input[name='boardEndDate']").value;
 
 
-                moveForm.querySelector("input[name='page']").value = pageNum;
-                moveForm.querySelector("input[name='boardStartDate']").value;
-                moveForm.querySelector("input[name='boardEndDate']").value;
-                moveForm.querySelector("input[name='searchType']").value = searchType;
-                moveForm.querySelector("input[name='keyword']").value = keyword;
-                moveForm.querySelector("input[name='regDate']").value;
-                moveForm.querySelector("input[name='like']").value;
-                moveForm.submit();
-            });
-        });
-        document.querySelector("#regDateBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            const regDate = document.querySelector("#regDateBtn").value;
-            moveForm.querySelector("input[name='regDate']").value = regDate;
-            moveForm.querySelector("input[name='like']").value = '';
-            moveForm.submit();
-        });
-        document.querySelector("#likeBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            const like = document.querySelector("#likeBtn").value;
-            moveForm.querySelector("input[name='like']").value = like;
-            moveForm.querySelector("input[name='regDate']").value = '';
-            moveForm.submit();
-        });
-        // 검색 버튼 클릭 시
-        document.querySelector("#searchBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            const searchType = document.querySelector("select[name='searchType']").value;
-            const keyword = document.querySelector("input[name='keyword']").value;
-            const startDate  = document.querySelector("input[name='boardStartDate']").value;
-            const endDate  = document.querySelector("input[name='boardEndDate']").value;
-            console.log(startDate+"#####");
-            console.log(endDate+"#####");
-     /*       if (!searchType || !keyword) {
-                alert("검색 종류와 키워드를 입력하세요.");
-                return;
-            }*/
-            moveForm.querySelector("input[name='boardStartDate']").value = startDate;
-            moveForm.querySelector("input[name='boardEndDate']").value = endDate;
-            moveForm.querySelector("input[name='searchType']").value = searchType;
-            moveForm.querySelector("input[name='keyword']").value = keyword;
-            moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정
-            moveForm.submit();
-        });
+                 moveForm.querySelector("input[name='page']").value = pageNum;
+                 moveForm.querySelector("input[name='boardStartDate']").value;
+                 moveForm.querySelector("input[name='boardEndDate']").value;
+                 moveForm.querySelector("input[name='searchType']").value = searchType;
+                 moveForm.querySelector("input[name='keyword']").value = keyword;
+                 moveForm.querySelector("input[name='regDate']").value;
+                 moveForm.querySelector("input[name='like']").value;
+                 moveForm.submit();
+             });
+         });
+         document.querySelector("#regDateBtn").addEventListener("click", function (e) {
+             e.preventDefault();
+             const regDate = document.querySelector("#regDateBtn").value;
+             moveForm.querySelector("input[name='regDate']").value = regDate;
+             moveForm.querySelector("input[name='like']").value = '';
+             moveForm.submit();
+         });
+         document.querySelector("#likeBtn").addEventListener("click", function (e) {
+             e.preventDefault();
+             const like = document.querySelector("#likeBtn").value;
+             moveForm.querySelector("input[name='like']").value = like;
+             moveForm.querySelector("input[name='regDate']").value = '';
+             moveForm.submit();
+         });
+         // 검색 버튼 클릭 시
+         document.querySelector("#searchBtn").addEventListener("click", function (e) {
+             e.preventDefault();
+             const searchType = document.querySelector("select[name='searchType']").value;
+             const keyword = document.querySelector("input[name='keyword']").value;
+             const startDate  = document.querySelector("input[name='boardStartDate']").value;
+             const endDate  = document.querySelector("input[name='boardEndDate']").value;
+             console.log(startDate+"#####");
+             console.log(endDate+"#####");
+             /!*       if (!searchType || !keyword) {
+                        alert("검색 종류와 키워드를 입력하세요.");
+                        return;
+                    }*!/
+             moveForm.querySelector("input[name='boardStartDate']").value = startDate;
+             moveForm.querySelector("input[name='boardEndDate']").value = endDate;
+             moveForm.querySelector("input[name='searchType']").value = searchType;
+             moveForm.querySelector("input[name='keyword']").value = keyword;
+             moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정
+             moveForm.submit();
+         });
+     });
+
+     document.querySelector("#registBtn").addEventListener("click", function () {
+         location.href = '/board/regist';
+     });*/
+    document.querySelector("#myCommon").addEventListener("click", function () {
+        location.href = '/main/common';
+    });
+    document.querySelector("#youCommon").addEventListener("click", function () {
+        location.href = '/main/youCommon';
     });
 
-    document.querySelector("#registBtn").addEventListener("click", function () {
-        location.href = '/board/regist';
-    });
 </script>
 <!-- / Layout wrapper -->
 

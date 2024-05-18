@@ -322,5 +322,19 @@ public class BoardController {
 
         return null;
     }
+    @PostMapping("/commonDelete")
+    public String commonDelete(Model model , String common_member_id, String boardIdx) throws Exception{
+
+        int idx = Integer.parseInt(boardIdx);
+        log.info("--------common_member_id-----" + common_member_id);
+        log.info("-----idx---------" + idx);
+        CommonDTO commonDTO = new CommonDTO();
+        commonDTO.setBoard_idx(idx);
+        commonDTO.setCommon_member_id(common_member_id);
+        boardService.commonDelete(commonDTO);
+
+
+        return "redirect:/board/boardDetail?boardIdx="+idx;
+    }
 
 }
