@@ -1,10 +1,14 @@
 package org.fullstack4.springboot.controller.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.fullstack4.springboot.dto.BoardDTO;
+import org.fullstack4.springboot.dto.CommonDTO;
+import org.fullstack4.springboot.dto.MemberDTO;
 import org.fullstack4.springboot.service.Board.BoardService;
+import org.fullstack4.springboot.service.Member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.Http2;
 import org.springframework.stereotype.Controller;
@@ -19,6 +23,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +38,8 @@ import java.util.UUID;
 public class BoardController {
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/regist")
     public String regsitGET()throws Exception{
@@ -42,7 +50,7 @@ public class BoardController {
         return "/board/regist";
     }
     @PostMapping("/regist")
-    public String regsitPOST(String boardTitle,String boardContent, String board_screen,String board_start_date, String board_end_date,String board_category,
+    public String regsitPOST(String boardTitle,String boardContent, String board_screen,String boardStartDate, String boardEndDate,String board_category,
             String board_hash, @RequestParam("file") MultipartFile file , HttpServletRequest request)throws Exception{
         log.info("==============================");
         log.info("BoardController >> regsitPOST()");
@@ -50,8 +58,8 @@ public class BoardController {
         log.info("###boardTitle###"+boardTitle);
         log.info("###boardContent###"+boardContent);
         log.info("###board_screen###"+board_screen);
-        log.info("###board_start_date###"+board_start_date);
-        log.info("###board_end_date###"+board_end_date);
+        log.info("###board_start_date###"+boardStartDate);
+        log.info("###board_end_date###"+boardEndDate);
         log.info("###board_category###"+board_category);
         log.info("###board_hash###"+board_hash);
         log.info("###file###"+file);
@@ -66,12 +74,12 @@ public class BoardController {
         boardDTO.setBoard_category(board_category);
         boardDTO.setBoard_hash(board_hash);
 
-        LocalDateTime startDateTime = LocalDate.parse(board_start_date, DateTimeFormatter.ISO_DATE).atStartOfDay();
-        LocalDateTime endDateTime = LocalDate.parse(board_end_date, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime startDateTime = LocalDate.parse(boardStartDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(boardEndDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
 
 
-        boardDTO.setBoard_start_date(startDateTime);
-        boardDTO.setBoard_end_date(endDateTime);
+        boardDTO.setBoardStartDate(startDateTime);
+        boardDTO.setBoardEndDate(endDateTime);
 
 
         log.info("###boardDTO###"+boardDTO);
@@ -141,8 +149,13 @@ public class BoardController {
         log.info("==============================");
         int idx = Integer.parseInt(boardIdx);
         BoardDTO boardDTO = boardService.boardDetail(idx);
+        List<CommonDTO> commonDTO = boardService.commonDetail(idx);
         log.info("=========boardDTO=========" + boardDTO);
         model.addAttribute("list", boardDTO);
+        if(commonDTO != null ) {
+            log.info("=========commonDTO=========" + commonDTO);
+            model.addAttribute("commonList", commonDTO);
+        }
         return "/board/detail";
     }
     @GetMapping("/modify")
@@ -158,7 +171,7 @@ public class BoardController {
     }
 
     @PostMapping("/modify")
-    public String modifyPOST(String boardTitle,String boardContent, String board_screen,String board_start_date, String board_end_date,String board_category,
+    public String modifyPOST(String boardTitle,String boardContent, String board_screen,String boardStartDate, String boardEndDate,String board_category,
                              String board_hash , String boardIdx, String board_image, HttpServletRequest request)throws Exception{
         log.info("==============================");
         log.info("BoardController >> regsitPOST()");
@@ -166,8 +179,8 @@ public class BoardController {
         log.info("###boardTitle###"+boardTitle);
         log.info("###boardContent###"+boardContent);
         log.info("###board_screen###"+board_screen);
-        log.info("###board_start_date###"+board_start_date);
-        log.info("###board_end_date###"+board_end_date);
+        log.info("###board_start_date###"+boardStartDate);
+        log.info("###board_end_date###"+boardEndDate);
         log.info("###board_category###"+board_category);
         log.info("###board_hash###"+board_hash);
         log.info("###board_image###"+board_image);
@@ -186,12 +199,12 @@ public class BoardController {
         boardDTO.setBoard_category(board_category);
         boardDTO.setBoard_hash(board_hash);
         boardDTO.setBoard_image(board_image);
-        LocalDateTime startDateTime = LocalDate.parse(board_start_date, DateTimeFormatter.ISO_DATE).atStartOfDay();
-        LocalDateTime endDateTime = LocalDate.parse(board_end_date, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime startDateTime = LocalDate.parse(boardStartDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(boardEndDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
 
 
-        boardDTO.setBoard_start_date(startDateTime);
-        boardDTO.setBoard_end_date(endDateTime);
+        boardDTO.setBoardStartDate(startDateTime);
+        boardDTO.setBoardEndDate(endDateTime);
 
 
         log.info("###boardDTO###"+boardDTO);
@@ -262,4 +275,52 @@ public class BoardController {
 
         return "redirect:/main/board";
     }
+
+    @GetMapping("/choice")
+    public String deliveryView(Model model , String boardIdx, String member_id) throws Exception{
+        List<MemberDTO> memberList = memberService.getMemberList();
+
+        log.info("------------------------------------");
+        log.info("memberList : " + memberList);
+        log.info("------------------------------------");
+        log.info("--------boardIdx-----" + boardIdx);
+        log.info("-----member_id---------" + member_id);
+        model.addAttribute("memberList" , memberList);
+        model.addAttribute("boardIdx" , boardIdx);
+        model.addAttribute("member_id" , member_id);
+
+        return "/board/choice";
+    }
+    @PostMapping("/choice")
+    public String boardChicePOST(Model model, String boardIdx, String member_id,
+                                 @RequestParam(value = "selectedIds", required = false) String[] selectedIds,
+                                 HttpServletResponse response) throws IOException {
+        log.info("------------------------------------");
+        log.info("boardChicePOST : ");
+        log.info("--------boardIdx-----" + boardIdx);
+        log.info("-----member_id---------" + member_id);
+        log.info("------------------------------------");
+
+        int idx = Integer.parseInt(boardIdx);
+        for (String selectedId : selectedIds) {
+            CommonDTO commonDTO = new CommonDTO();
+            commonDTO.setBoard_idx(idx);
+            commonDTO.setMember_id(member_id);
+            commonDTO.setCommon_member_id(selectedId);
+            memberService.insertCommon(commonDTO);
+        }
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
+        PrintWriter out = response.getWriter();
+        out.println("<script>");
+        out.println("alert('공유가 완료되었습니다.');");
+        out.println("window.opener.location.href = '/board/boardDetail?boardIdx=" + idx + "';");
+        out.println("window.close();");
+        out.println("</script>");
+
+        return null;
+    }
+
 }

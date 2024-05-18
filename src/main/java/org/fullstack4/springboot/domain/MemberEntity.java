@@ -33,4 +33,6 @@ public class MemberEntity {
     private LocalDateTime member_reg_date;
     @Column(length = 20, nullable = false)
     private String member_type;
+
+
 }

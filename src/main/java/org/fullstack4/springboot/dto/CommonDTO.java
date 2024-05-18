@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class commonDTO {
+public class CommonDTO {
 
     private int common_idx;
     private int board_idx;
     private String member_id;
+    private String common_member_id;
 }

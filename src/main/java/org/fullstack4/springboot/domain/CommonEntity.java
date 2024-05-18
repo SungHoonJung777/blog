@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Table(name="blog_common")
-public class commonEntity {
+public class CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int common_idx;
@@ -21,4 +21,7 @@ public class commonEntity {
 
     @Column(length = 120, nullable = false)
     private String member_id;
+
+    @Column(length = 120, nullable = false)
+    private String common_member_id;
 }

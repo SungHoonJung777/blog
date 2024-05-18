@@ -1,18 +1,26 @@
 package org.fullstack4.springboot.service.Member;
 
 import lombok.extern.log4j.Log4j2;
+import org.fullstack4.springboot.domain.CommonEntity;
 import org.fullstack4.springboot.domain.MemberEntity;
+import org.fullstack4.springboot.dto.BoardDTO;
+import org.fullstack4.springboot.dto.CommonDTO;
 import org.fullstack4.springboot.dto.MemberDTO;
+import org.fullstack4.springboot.repository.CommonRepository;
 import org.fullstack4.springboot.repository.MemberRepository;
 import org.fullstack4.springboot.service.Member.MemberService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Log4j2
 public class MemberServiceImpl implements MemberService {
-
+    @Autowired
+    private CommonRepository commonRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -50,4 +58,21 @@ public class MemberServiceImpl implements MemberService {
         int uREsult = memberRepository.infoChange(memberDTO);
         return uREsult;
     }
+
+    @Override
+    public List<MemberDTO> getMemberList() {
+
+        List<MemberDTO> memberDTOList = memberRepository.findAll().stream().map(vo->
+                modelMapper.map(vo,MemberDTO.class)).collect(Collectors.toList());
+
+        return memberDTOList;
+    }
+
+    @Override
+    public int insertCommon(CommonDTO commonDTO) {
+        CommonEntity commonEntity = modelMapper.map(commonDTO,CommonEntity.class);
+        int insertCommon = commonRepository.save(commonEntity).getCommon_idx();
+        return insertCommon;
+    }
+
 }

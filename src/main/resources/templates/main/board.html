@@ -91,7 +91,81 @@
             background-color: #007bff;
             color: #fff;
         }
+        .search-form {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
+        .search-form label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .search-form input[type="date"],
+        .search-form input[type="text"],
+        .search-form select,
+        .search-form button {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-form input[type="date"],
+        .search-form input[type="text"] {
+            width: 150px;
+        }
+
+        .search-form select {
+            width: 100px;
+        }
+
+        .search-form button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-form span {
+            font-weight: bold;
+        }
+        .sort-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sort-buttons button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .sort-buttons button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sort-buttons button:focus {
+            outline: none;
+            background-color: #004080;
+        }
     </style>
 </head>
 
@@ -217,14 +291,25 @@
                     <div class="card">
                         <h5 class="card-header">나의 학습</h5>
                         <!-- 검색 폼 -->
-                        <form th:action="@{/main/board}" method="get">
+                        <form th:action="@{/main/board}" method="get" class="search-form">
+                            <label for="boardStartDate">기간</label>
+                            <input type="date" name="boardStartDate" id="boardStartDate">
+                            <span>~</span>
+                            <input type="date" name="boardEndDate" id="boardEndDate">
+
                             <select name="searchType">
                                 <option value="title" th:selected="${searchType == 'title'}">제목</option>
                                 <option value="content" th:selected="${searchType == 'content'}">내용</option>
                             </select>
+
                             <input type="text" name="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}" />
-                            <button type="button" id="searchBtn">검색</button>
+
+                            <button type="submit" id="searchBtn">검색</button>
                         </form>
+                        <div class="sort-buttons">
+                            <button type="button" id="regDateBtn" value="regDate">최신 등록 순</button>
+                            <button type="button" id="likeBtn" value="like">좋아요 순</button>
+                        </div>
                         <div class="table-responsive text-nowrap">
                             <table class="table table-hover">
                                 <thead>
@@ -246,15 +331,15 @@
                                     <td><a th:text="${list.boardTitle}"
                                            th:href="@{/board/boardDetail(boardIdx=${list.boardIdx})}"></a></td>
 
-                                    <td th:text="${#temporals.format(list.board_reg_date, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#temporals.format(list.boardRegDate, 'yyyy-MM-dd')}"></td>
 
-                                    <td><span th:text="${list.board_like}" class="badge bg-label-primary me-1"></span>
+                                    <td><span th:text="${list.boardLike}" class="badge bg-label-primary me-1"></span>
                                     </td>
                                     <td th:text="${list.board_screen}"></td>
                                     <td>
-                                        <span th:text="${#temporals.format(list.board_start_date, 'yyyy-MM-dd')}"></span>
+                                        <span th:text="${#temporals.format(list.boardStartDate, 'yyyy-MM-dd')}"></span>
                                         <span> ~ </span>
-                                        <span th:text="${#temporals.format(list.board_end_date, 'yyyy-MM-dd')}"></span>
+                                        <span th:text="${#temporals.format(list.boardEndDate, 'yyyy-MM-dd')}"></span>
                                     </td>
 
 
@@ -296,8 +381,8 @@
                         <li><a th:href="@{/main/board(page=1)}"> << </a></li>
 
                         <li th:class="${postsPages.first} ? 'disabled'">
-                            <a th:if="${!postsPages.first}" th:href="@{/main/board(page=${postsPages.number})}"> 이전 </a>
-                            <span th:if="${postsPages.first}"> 이전 </span>
+                            <a th:if="${!postsPages.first}" th:href="@{/main/board(page=${postsPages.number})}"> < </a>
+                            <span th:if="${postsPages.first}"> < </span>
                         </li>
 
                         <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
@@ -308,8 +393,8 @@
                         </span>
 
                         <li th:class="${postsPages.number == postsPages.totalPages - 1} ? 'disabled'">
-                            <a th:if="${postsPages.number != postsPages.totalPages - 1}" th:href="@{/main/board(page=${postsPages.number + 2})}"> 다음 </a>
-                            <span th:if="${postsPages.number == postsPages.totalPages - 1}"> 다음 </span>
+                            <a th:if="${postsPages.number != postsPages.totalPages - 1}" th:href="@{/main/board(page=${postsPages.number + 2})}"> > </a>
+                            <span th:if="${postsPages.number == postsPages.totalPages - 1}"> > </span>
                         </li>
 
                         <li><a th:href="@{/main/board(page=${postsPages.totalPages})}"> >> </a></li>
@@ -326,6 +411,10 @@
             <input type="hidden" name="searchType" th:value="${searchType}">
             <input type="hidden" name="keyword" th:value="${keyword}">
             <input type="hidden" name="page" th:value="${page}">
+            <input type="hidden" name="boardStartDate" th:value="${boardStartDate}">
+            <input type="hidden" name="boardEndDate" th:value="${boardEndDate}">
+            <input type="hidden" name="regDate" th:value="${regDate}">
+            <input type="hidden" name="like" th:value="${like}">
         </form>
 
         <div class="layout-overlay layout-menu-toggle"></div>
@@ -335,87 +424,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    /*document.addEventListener("DOMContentLoaded", function () {
-        const moveForm = document.querySelector("#moveForm");
-
-        // 페이지 번호 클릭 시
-        document.querySelectorAll(".pageInfo_area a").forEach(function (link) {
-            link.addEventListener("click", function (e) {
-                e.preventDefault();
-                const pageNum = link.getAttribute("href");
-                moveForm.querySelector("input[name='page']").value = pageNum;
-                moveForm.submit();
-            });
-        });
-
-        // 검색 버튼 클릭 시
-        document.querySelector("#searchBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            const searchType = document.querySelector("#searchType").value;
-            const keyword = document.querySelector("#keyword").value;
-
-            if (!searchType || !keyword) {
-                alert("검색 종류와 키워드를 입력하세요.");
-                return;
-            }
-
-            moveForm.querySelector("input[name='searchType']").value = searchType;
-            moveForm.querySelector("input[name='keyword']").value = keyword;
-            moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정
-            moveForm.submit();
-        });
-    });
-
-
-
-       const moveForm = document.querySelector("#moveForm");
-        document.querySelector(".pageinfo")
-        $(".pageInfo_area a").on("click", function(e){
-            console.log("#############3");
-            e.preventDefault();
-            const pageNum = $(this).attr("href");
-            moveForm.querySelector("input[name='pageNum']").value = pageNum;
-            console.log(pageNum+"######");
-            moveForm.action = "/admin/productList";
-            moveForm.submit();
-        });
-
-        document.querySelector("#searchBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-
-            let type = $(".search_area select").val();
-            let val = document.querySelector("#keyword").value;
-
-            if(!type){
-                alert("검색 종류를 선택하세요.");
-                return false;
-            }
-
-            if(!val){
-                alert("키워드를 입력하세요.");
-                return false;
-            }
-
-            moveForm.querySelector("input[name='type']").value = type;
-            moveForm.querySelector("input[name='keyword']").value = val;
-            moveForm.querySelector("input[name='pageNum']").value = 1;
-            moveForm.submit();
-        });
-            document.addEventListener('DOMContentLoaded', function() {
-                const pageNumbers = document.querySelectorAll('.pagination li span');
-
-                pageNumbers.forEach(function(pageNumber) {
-                    pageNumber.addEventListener('mousedown', function() {
-                        // 모든 페이지 번호의 active 클래스를 제거
-                        pageNumbers.forEach(function(page) {
-                            page.classList.remove('active');
-                        });
-
-                        // 현재 클릭된 페이지 번호에 active 클래스 추가
-                        this.classList.add('active');
-                    });
-                });
-            });*/
 
     document.addEventListener("DOMContentLoaded", function () {
         const moveForm = document.querySelector("#moveForm");
@@ -425,22 +433,51 @@
             link.addEventListener("click", function (e) {
                 e.preventDefault();
                 const pageNum = link.getAttribute("href").split("=")[1];
+                const searchType = document.querySelector("select[name='searchType']").value;
+                const keyword = document.querySelector("input[name='keyword']").value;
+                const startDate  = document.querySelector("input[name='boardStartDate']").value;
+                const endDate  = document.querySelector("input[name='boardEndDate']").value;
+
+
                 moveForm.querySelector("input[name='page']").value = pageNum;
+                moveForm.querySelector("input[name='boardStartDate']").value;
+                moveForm.querySelector("input[name='boardEndDate']").value;
+                moveForm.querySelector("input[name='searchType']").value = searchType;
+                moveForm.querySelector("input[name='keyword']").value = keyword;
+                moveForm.querySelector("input[name='regDate']").value;
+                moveForm.querySelector("input[name='like']").value;
                 moveForm.submit();
             });
         });
-
+        document.querySelector("#regDateBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            const regDate = document.querySelector("#regDateBtn").value;
+            moveForm.querySelector("input[name='regDate']").value = regDate;
+            moveForm.querySelector("input[name='like']").value = '';
+            moveForm.submit();
+        });
+        document.querySelector("#likeBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            const like = document.querySelector("#likeBtn").value;
+            moveForm.querySelector("input[name='like']").value = like;
+            moveForm.querySelector("input[name='regDate']").value = '';
+            moveForm.submit();
+        });
         // 검색 버튼 클릭 시
         document.querySelector("#searchBtn").addEventListener("click", function (e) {
             e.preventDefault();
             const searchType = document.querySelector("select[name='searchType']").value;
             const keyword = document.querySelector("input[name='keyword']").value;
-
-            if (!searchType || !keyword) {
+            const startDate  = document.querySelector("input[name='boardStartDate']").value;
+            const endDate  = document.querySelector("input[name='boardEndDate']").value;
+            console.log(startDate+"#####");
+            console.log(endDate+"#####");
+     /*       if (!searchType || !keyword) {
                 alert("검색 종류와 키워드를 입력하세요.");
                 return;
-            }
-
+            }*/
+            moveForm.querySelector("input[name='boardStartDate']").value = startDate;
+            moveForm.querySelector("input[name='boardEndDate']").value = endDate;
             moveForm.querySelector("input[name='searchType']").value = searchType;
             moveForm.querySelector("input[name='keyword']").value = keyword;
             moveForm.querySelector("input[name='page']").value = 1; // 페이지 번호를 1로 설정

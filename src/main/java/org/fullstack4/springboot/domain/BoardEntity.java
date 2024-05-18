@@ -29,7 +29,7 @@ public class BoardEntity {
     private String boardContent;
 
     @Column(nullable = false)
-    private int board_like;
+    private int boardLike;
 
     @Column(length = 120, nullable = false)
     private String board_screen;
@@ -41,13 +41,13 @@ public class BoardEntity {
     private String board_hash;
 
     @Column(nullable = false)
-    private LocalDateTime board_start_date;
+    private LocalDateTime boardStartDate;
 
     @Column(nullable = false)
-    private LocalDateTime board_end_date;
+    private LocalDateTime boardEndDate;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime board_reg_date;
+    private LocalDateTime boardRegDate;
 
     @Column(nullable = false)
     private LocalDateTime boardModifyDate;
@@ -57,7 +57,7 @@ public class BoardEntity {
 
     @PrePersist
     public void prePersist() {
-        this.board_reg_date = LocalDateTime.now();
+        this.boardRegDate = LocalDateTime.now();
         this.boardModifyDate = LocalDateTime.now();
     }
 

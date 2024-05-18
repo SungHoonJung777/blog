@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -34,7 +36,15 @@ public interface BoardRepository  extends JpaRepository<BoardEntity, Integer> {
     int deleteBoard(int board_idx);
 
         // 제목 또는 내용에 특정 키워드가 포함된 게시물을 검색
-        Page<BoardEntity> findByBoardTitleContainingOrBoardContentContaining(String boardTitle, String boardContent, Pageable pageable);
+        Page<BoardEntity> findByBoardTitleContainingOrBoardContentContainingAndBoardRegDateBetween(
+                String boardTitle, String boardContent, LocalDateTime boardStartDate, LocalDateTime boardEndDate, Pageable pageable);
 
+        Page<BoardEntity> findByBoardTitleContainingOrBoardContentContaining(String boardTitle, String boardContent, Pageable pageable);
+    Page<BoardEntity> findByBoardRegDateBetween( LocalDateTime boardStartDate, LocalDateTime boardEndDate, Pageable pageable);
+
+    Page<BoardEntity> findByBoardTitleContainingAndBoardRegDateBetween(
+            String boardTitle, LocalDateTime boardStartDate, LocalDateTime boardEndDate, Pageable pageable);
+    Page<BoardEntity> findByBoardContentContainingAndBoardRegDateBetween(
+            String boardContent, LocalDateTime boardStartDate, LocalDateTime boardEndDate, Pageable pageable);
 
 }

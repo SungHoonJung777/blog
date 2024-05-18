@@ -3,8 +3,12 @@ package org.fullstack4.springboot.service.Board;
 import lombok.extern.log4j.Log4j2;
 import org.fullstack4.springboot.Criteria.Criteria;
 import org.fullstack4.springboot.domain.BoardEntity;
+import org.fullstack4.springboot.domain.CommonEntity;
 import org.fullstack4.springboot.dto.BoardDTO;
+import org.fullstack4.springboot.dto.CommonDTO;
+import org.fullstack4.springboot.dto.MemberDTO;
 import org.fullstack4.springboot.repository.BoardRepository;
+import org.fullstack4.springboot.repository.CommonRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +29,8 @@ public class BoardServiceImpl implements BoardService {
     private ModelMapper modelMapper;
     @Autowired
     private BoardRepository boardRepository;
-
+    @Autowired
+    private CommonRepository commonRepository;
     @Override
     public List<BoardDTO> getList(String member_id) {
         List<BoardDTO> boardEntities = boardRepository.getList(member_id).stream().map(vo->modelMapper.map(vo,BoardDTO.class)).collect(Collectors.toList());
@@ -67,35 +74,98 @@ public class BoardServiceImpl implements BoardService {
         return count;
     }*/
 
-    public Page<BoardDTO> paging(String keyword, Pageable pageable) {
+    public Page<BoardDTO> paging(LocalDateTime boardStartDate, LocalDateTime boardEndDate, String keyword, Pageable pageable
+    ,String searchType) {
         int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
         int pageLimit = 10; // 한페이지에 보여줄 글 개수
 
         Page<BoardEntity> searchResult;
-
+        System.out.println("#boardStartDate" + boardStartDate);
+        System.out.println("#boardEndDate" + boardEndDate);
         if (keyword != null && !keyword.isEmpty()) {
-            // 검색어가 제공된 경우, 해당 검색어를 제목(title) 또는 내용(content)에서 찾는다고 가정
-            searchResult = boardRepository.findByBoardTitleContainingOrBoardContentContaining(keyword, keyword, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+            if (boardStartDate != null && boardEndDate != null) {
+                // 검색어와 시작일과 종료일이 모두 제공된 경우
+                System.out.println("모두 들어옴 ");
+                if(searchType == "title") {
+
+                    searchResult = boardRepository.findByBoardTitleContainingAndBoardRegDateBetween(keyword,boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+                } else {
+                    searchResult = boardRepository.findByBoardContentContainingAndBoardRegDateBetween(keyword,boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+
+                }
+            } else {
+                // 검색어는 제공되었지만 시작일 또는 종료일 중 하나 이상이 null인 경우
+                searchResult = boardRepository.findByBoardTitleContainingOrBoardContentContaining(keyword, keyword, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+            }
         } else {
-            // 검색어가 제공되지 않은 경우, 모든 게시물을 반환
-            searchResult = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+            if (boardStartDate != null && boardEndDate != null) {
+                // 검색어가 제공되지 않았지만 시작일과 종료일이 모두 제공된 경우
+                searchResult = boardRepository.findByBoardRegDateBetween(boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+            } else {
+                // 검색어와 시작일과 종료일 모두 제공되지 않은 경우, 모든 게시물을 반환
+                searchResult = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
+            }
         }
 
+        // 검색 결과가 null인 경우 예외 처리
+        if (searchResult == null) {
+            // 예외 처리 방법에 따라 빈 페이지를 반환하거나 오류 메시지를 전달할 수 있음
+            return Page.empty(); // 빈 페이지 반환
+        }
+
+        System.out.println(searchResult.map(BoardDTO::new)+"결과 반환");
+        // 검색 결과를 DTO로 변환하여 반환
+        return searchResult.map(BoardDTO::new);
+    }
+    public Page<BoardDTO> pagingLike(LocalDateTime boardStartDate, LocalDateTime boardEndDate, String keyword, Pageable pageable
+            ,String searchType) {
+        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
+        int pageLimit = 10; // 한페이지에 보여줄 글 개수
+
+        Page<BoardEntity> searchResult;
+        System.out.println("#boardStartDate" + boardStartDate);
+        System.out.println("#boardEndDate" + boardEndDate);
+        if (keyword != null && !keyword.isEmpty()) {
+            if (boardStartDate != null && boardEndDate != null) {
+                // 검색어와 시작일과 종료일이 모두 제공된 경우
+                System.out.println("모두 들어옴 ");
+                if(searchType == "title") {
+
+                    searchResult = boardRepository.findByBoardTitleContainingAndBoardRegDateBetween(keyword,boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardLike")));
+                } else {
+                    searchResult = boardRepository.findByBoardContentContainingAndBoardRegDateBetween(keyword,boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardLike")));
+
+                }
+            } else {
+                // 검색어는 제공되었지만 시작일 또는 종료일 중 하나 이상이 null인 경우
+                searchResult = boardRepository.findByBoardTitleContainingOrBoardContentContaining(keyword, keyword, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardLike")));
+            }
+        } else {
+            if (boardStartDate != null && boardEndDate != null) {
+                // 검색어가 제공되지 않았지만 시작일과 종료일이 모두 제공된 경우
+                searchResult = boardRepository.findByBoardRegDateBetween(boardStartDate, boardEndDate, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardLike")));
+            } else {
+                // 검색어와 시작일과 종료일 모두 제공되지 않은 경우, 모든 게시물을 반환
+                searchResult = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardLike")));
+            }
+        }
+
+        // 검색 결과가 null인 경우 예외 처리
+        if (searchResult == null) {
+            // 예외 처리 방법에 따라 빈 페이지를 반환하거나 오류 메시지를 전달할 수 있음
+            return Page.empty(); // 빈 페이지 반환
+        }
+
+        System.out.println(searchResult.map(BoardDTO::new)+"결과 반환");
         // 검색 결과를 DTO로 변환하여 반환
         return searchResult.map(BoardDTO::new);
     }
 
-/*    public Page<BoardDTO> paging(Pageable pageable) {
-        int page = pageable.getPageNumber() - 1; // page 위치에 있는 값은 0부터 시작한다.
-        int pageLimit = 10; // 한페이지에 보여줄 글 개수
+    @Override
+    public List<CommonDTO>  commonDetail(int boardIdx) {
+        List<CommonDTO> commonDTOList = commonRepository.commonDetail(boardIdx).stream().map(vo-> modelMapper.map(vo,CommonDTO.class)).collect(Collectors.toList());
 
-        // 한 페이지당 3개식 글을 보여주고 정렬 기준은 ID기준으로 내림차순
-        Page<BoardEntity> postsPages = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "boardIdx")));
 
-        // 목록 : id, title, content, author
-        Page<BoardDTO> postsResponseDtos = postsPages.map(
-                postPage -> new BoardDTO(postPage));
-
-        return postsResponseDtos;
-    }*/
+        return commonDTOList;
+    }
 }
