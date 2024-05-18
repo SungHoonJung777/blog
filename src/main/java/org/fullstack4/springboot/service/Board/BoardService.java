@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BoardService {
+
+    List<BoardDTO> getListToday();
     List<BoardDTO> getList(String member_id);
     int registBoard(BoardDTO boardDTO);
 

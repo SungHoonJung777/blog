@@ -191,4 +191,10 @@ public class BoardServiceImpl implements BoardService {
         return boardDTOList;
     }
 
+    @Override
+    public List<BoardDTO> getListToday() {
+        List<BoardDTO> boardEntities = boardRepository.getListToday().stream().map(vo->modelMapper.map(vo,BoardDTO.class)).collect(Collectors.toList());
+
+        return boardEntities;
+    }
 }

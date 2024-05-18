@@ -134,5 +134,16 @@ public class MainController {
         model.addAttribute("postsPages", boardDTOList);
         return "/main/youCommon";
     }
+    @GetMapping("/today")
+    public String today(HttpServletRequest request , Model model){
+        log.info("==============================");
+        log.info("mainController >> common()");
+        log.info("==============================");
+        HttpSession session = request.getSession();
 
+        List<BoardDTO> boardDTOList = boardService.getListToday();
+        log.info("========boardDTOList==========" + boardDTOList);
+        model.addAttribute("postsPages", boardDTOList);
+        return "/main/today";
+    }
 }

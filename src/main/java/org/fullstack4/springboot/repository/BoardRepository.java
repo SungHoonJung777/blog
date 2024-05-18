@@ -23,7 +23,8 @@ public interface BoardRepository  extends JpaRepository<BoardEntity, Integer> {
     List<BoardEntity> getListMy(String member_id);
     @Query(value ="SELECT distinct  a.* FROM blog_board a inner join blog_common b on a.board_idx = b.board_idx where b.common_member_id = ?1 ORDER BY a.board_idx DESC" , nativeQuery = true)
     List<BoardEntity> getListYou(String member_id);
-
+    @Query(value ="SELECT * FROM blog_board where board_screen = 'y' ORDER BY board_idx DESC limit 0,8" , nativeQuery = true)
+    List<BoardEntity> getListToday();
 
 
     /*
