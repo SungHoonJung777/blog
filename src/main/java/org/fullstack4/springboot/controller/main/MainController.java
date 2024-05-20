@@ -146,4 +146,12 @@ public class MainController {
         model.addAttribute("postsPages", boardDTOList);
         return "/main/today";
     }
+    @GetMapping("/coffee")
+    public String coffee(HttpServletRequest request , Model model){
+        log.info("==============================");
+        log.info("mainController >> coffee()");
+        log.info("==============================");
+
+        return "/main/coffee";
+    }
 }
